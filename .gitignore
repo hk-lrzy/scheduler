@@ -1,0 +1,12 @@
+.idea
+*.iml
+*.jar
+*.class
+**/target/
+.DS_Store
+*.log
+**/.project
+**/.classpath
+**/.factorypath
+**/.settings
+dorado-common/metastore_db
