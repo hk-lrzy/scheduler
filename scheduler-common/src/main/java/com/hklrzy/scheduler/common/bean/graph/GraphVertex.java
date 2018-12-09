@@ -1,4 +1,4 @@
-package com.hklrzy.scheduler.common.bean;
+package com.hklrzy.scheduler.common.bean.graph;
 
 import com.cronutils.model.Cron;
 import com.hklrzy.scheduler.common.constants.TaskDependencyType;

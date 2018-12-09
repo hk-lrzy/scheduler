@@ -11,22 +11,27 @@ import java.util.Collection;
 public interface Graph<V> {
 
     /**
-     * @param v
+     * @param vertex
      */
-    void addOrUpdateTask(V v);
-
+    void addOrUpdateTask(V vertex);
 
     /**
-     * @param vCollection
+     * @param vertexes
      */
-    void addOrUpdateTasks(Collection<V> vCollection);
+    void addOrUpdateTasks(Collection<V> vertexes);
 
     /**
      * 删除任务
      *
-     * @param id 任务id
-     * @return 被删除的任务
+     * @param vertexKey 任务id
      */
-    V removeTask(Long id);
+    void removeTask(Long vertexKey);
+
+    /**
+     * 批量的删除任务
+     *
+     * @param vertexKeys 任务id的集合
+     */
+    void removeTasks(Collection<Long> vertexKeys);
 
 }
