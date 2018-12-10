@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
-import java.io.IOException;
+import java.util.List;
 
 /**
  * Created 2018/12/9.
@@ -83,8 +83,30 @@ public class ZkClient implements Closeable {
                     .forPath(path, data.getBytes(Charsets.UTF_8));
             return true;
         } catch (Exception e) {
-            LOG.error("ZkClient create node with path [{}] and path [{}] failed.", path, mode);
+            LOG.error("ZkClient create node with path [{}] and mode [{}] failed.", path, mode);
             throw new SchedulerException(ErrorCode.ZK_NODE_CREATE_EXCEPTION, e);
+        }
+    }
+
+
+    public List<String> getChildNode(String path) {
+        if (Strings.isNullOrEmpty(path)) {
+            throw new SchedulerException(ErrorCode.PARAMETER_INVAILED_EXCEPTION);
+        }
+        try {
+            return zk.getChildren().forPath(path);
+        } catch (Exception e) {
+            LOG.error("ZkClient get child node with path [{}] failed.", path);
+            throw new SchedulerException(ErrorCode.ZK_NODE_FIND_EXCEPTION, e);
+        }
+    }
+
+    public static String getLatchLeaderId(LeaderLatch latch) {
+        try {
+            return latch.getLeader().getId();
+        } catch (Exception e) {
+            LOG.error("ZkClient get latch leader failed.");
+            return null;
         }
     }
 
@@ -92,8 +114,9 @@ public class ZkClient implements Closeable {
         return new LeaderLatch(zk, path, id);
     }
 
+
     @Override
-    public void close() throws IOException {
+    public void close() {
         CloseableUtils.closeQuietly(this.zk);
     }
 }

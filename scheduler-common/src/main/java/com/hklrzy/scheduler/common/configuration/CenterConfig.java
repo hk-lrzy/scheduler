@@ -24,7 +24,9 @@ public class CenterConfig {
     public static final String CENTER_ELECTION_PATH = "center.election.path";
     public static final String DEFAULT_CENTER_ELECTION_PATH = "/scheduler/center/election";
 
-    public static final String DUBBO_APPLICATION = "scheduler.center.application";
-    public static final String DUBBO_REGISTRY = "scheduler.center.registry";
+    public static final String DUBBO_APPLICATION = "center.application";
+    public static final String DUBBO_REGISTRY = "center.registry";
+    public static final String DUBBO_REGISTER_ID = "schedulerCenterRegister";
+    public static final String DUBBO_SERVICE_VERSION = "1.0.0";
 
 }

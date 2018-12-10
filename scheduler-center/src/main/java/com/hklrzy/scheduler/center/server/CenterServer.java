@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Created 2018/12/9.
@@ -31,9 +32,11 @@ public class CenterServer {
     private final String registerPath;
     private final String electionPath;
 
+
     private LeaderLatch latch;
     private CenterRole role;
     private String leader;
+    private List<String> slaves;
 
     public static CenterServer create(Config config, ZkClient zkClient) {
         return new CenterServer(zkClient, NetUtils.getLocalAddress(), config.getInt(CenterConfig.PORT_CONFIG));
@@ -50,24 +53,9 @@ public class CenterServer {
     public void register() {
         String path = getRegisterPath();
         this.latch = zkClient.leaderElection(this.electionPath, path);
-        this.latch.addListener(new LeaderLatchListener() {
-            @Override
-            public void isLeader() {
-                zkClient.createEphemeralNode(append(electionPath, path), path);
-                role = getRole(latch.hasLeadership());
-                LOG.info("The center [{}] has become role [{}].", path, role);
-            }
-
-            @Override
-            public void notLeader() {
-                zkClient.createEphemeralNode(append(registerPath, path), path);
-                role = getRole(latch.hasLeadership());
-                LOG.info("The center [{}] has become role [{}].", path, role);
-            }
-        });
+        this.latch.addListener(new AcquireMetaLeaderLatchListener(path));
         try {
             this.latch.start();
-
             Thread.sleep(200);
         } catch (Exception e) {
             LOG.error("Start election center failed.");
@@ -97,5 +85,32 @@ public class CenterServer {
         }
         builder.append(path);
         return builder.toString();
+    }
+
+    private class AcquireMetaLeaderLatchListener implements LeaderLatchListener {
+
+        private String path;
+
+        public AcquireMetaLeaderLatchListener(String path) {
+            this.path = path;
+        }
+
+        @Override
+        public void isLeader() {
+            acquireMeta(append(electionPath, path), path);
+        }
+
+        @Override
+        public void notLeader() {
+            acquireMeta(append(registerPath, path), path);
+        }
+
+        private void acquireMeta(String path, String data) {
+            zkClient.createEphemeralNode(append(electionPath, path), data);
+            role = getRole(latch.hasLeadership());
+            leader = ZkClient.getLatchLeaderId(latch);
+            slaves = zkClient.getChildNode(registerPath);
+            LOG.info("The center [{}] has become role [{}].", path, role);
+        }
     }
 }

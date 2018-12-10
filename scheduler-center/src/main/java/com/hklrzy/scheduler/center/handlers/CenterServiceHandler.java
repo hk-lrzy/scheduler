@@ -27,6 +27,12 @@ public class CenterServiceHandler implements CenterService {
     private Graph<TaskBean> taskBeanGraph;
     private CenterServer centerServer;
 
+    public CenterServiceHandler() {
+    }
+
+    public static CenterServiceHandler getInstance() {
+        return new CenterServiceHandler();
+    }
 
     @Override
     public List<TaskBean> getParentTaskBeans(TaskBean childTaskBean) {
