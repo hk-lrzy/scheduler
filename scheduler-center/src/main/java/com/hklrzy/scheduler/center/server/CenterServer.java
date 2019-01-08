@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @author ke.hao
  */
-public class CenterServer {
+public class CenterServer implements Disposable {
     private static final Logger LOG =
             LoggerFactory.getLogger(CenterServer.class);
 
@@ -32,12 +32,19 @@ public class CenterServer {
     private final String registerPath;
     private final String electionPath;
 
-
     private LeaderLatch latch;
     private CenterRole role;
     private String leader;
     private List<String> slaves;
 
+
+    /**
+     * 创建一个调度中心的服务
+     *
+     * @param config   配置信息
+     * @param zkClient zk客户端
+     * @return
+     */
     public static CenterServer create(Config config, ZkClient zkClient) {
         return new CenterServer(zkClient, NetUtils.getLocalAddress(), config.getInt(CenterConfig.PORT_CONFIG));
     }
@@ -50,6 +57,9 @@ public class CenterServer {
         this.electionPath = CenterConfig.DEFAULT_CENTER_ELECTION_PATH;
     }
 
+    /**
+     * 注册服务，并选举出主要负责服务的leader节点
+     */
     public void register() {
         String path = getRegisterPath();
         this.latch = zkClient.leaderElection(this.electionPath, path);
@@ -87,6 +97,20 @@ public class CenterServer {
         return builder.toString();
     }
 
+    @Override
+    public void export() {
+
+    }
+
+    @Override
+    public void close() {
+
+    }
+
+
+    /**
+     * 用于选举
+     */
     private class AcquireMetaLeaderLatchListener implements LeaderLatchListener {
 
         private String path;
@@ -106,7 +130,7 @@ public class CenterServer {
         }
 
         private void acquireMeta(String path, String data) {
-            zkClient.createEphemeralNode(append(electionPath, path), data);
+            zkClient.createEphemeralNode(path, data);
             role = getRole(latch.hasLeadership());
             leader = ZkClient.getLatchLeaderId(latch);
             slaves = zkClient.getChildNode(registerPath);

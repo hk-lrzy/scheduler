@@ -2,7 +2,7 @@ package com.hklrzy.scheduler.center.graph;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.hklrzy.scheduler.common.bean.TaskBean;
+import com.hklrzy.scheduler.common.bean.TaskRecord;
 import com.hklrzy.scheduler.common.bean.graph.GraphEdge;
 import com.hklrzy.scheduler.common.bean.graph.GraphInsVertex;
 import com.hklrzy.scheduler.common.bean.graph.GraphVertex;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  *
  * @author ke.hao
  */
-public class MemoryTaskGraph implements Graph<TaskBean> {
+public class MemoryTaskGraph implements Graph<TaskRecord> {
     private static final Logger LOG =
             LoggerFactory.getLogger(MemoryTaskGraph.class);
 
@@ -42,18 +42,18 @@ public class MemoryTaskGraph implements Graph<TaskBean> {
     }
 
     @Override
-    public synchronized void addOrUpdateTask(TaskBean taskBean) {
-        addOrUpdateTasks(Collections.singleton(taskBean));
+    public synchronized void addOrUpdateTask(TaskRecord taskRecord) {
+        addOrUpdateTasks(Collections.singleton(taskRecord));
     }
 
     @Override
-    public synchronized void addOrUpdateTasks(Collection<TaskBean> vertexs) {
+    public synchronized void addOrUpdateTasks(Collection<TaskRecord> vertexs) {
         //1. 初始化参数
         Map<GraphVertex, Set<GraphEdge>> backupGraphEdgeMap = Maps.newHashMap();
         Set<Long> newGraphEdges = Sets.newHashSet();
 
         //2. 添加点
-        for (TaskBean bean : vertexs) {
+        for (TaskRecord bean : vertexs) {
             Long taskId = bean.getId();
             if (!memoryGraph.containsVertex(taskId)) {
                 memoryGraph.addVertex(taskId);
@@ -68,7 +68,7 @@ public class MemoryTaskGraph implements Graph<TaskBean> {
 
         DirectedAcyclicGraph<GraphInsVertex, DefaultEdge> insGraph = new DirectedAcyclicGraph<>(DefaultEdge.class);
         //3. 添加边
-        for (TaskBean bean : vertexs) {
+        for (TaskRecord bean : vertexs) {
             try {
                 addEdges(bean, insGraph, true);
             } catch (Exception e) {
@@ -87,7 +87,7 @@ public class MemoryTaskGraph implements Graph<TaskBean> {
         LOG.info("Add the task to graph successfully.");
     }
 
-    private synchronized void addEdges(TaskBean bean, DirectedAcyclicGraph<GraphInsVertex, DefaultEdge> insGraph, boolean strict) {
+    private synchronized void addEdges(TaskRecord bean, DirectedAcyclicGraph<GraphInsVertex, DefaultEdge> insGraph, boolean strict) {
         List<GraphEdge> graphEdges = JsonUtils.parseArray(bean.getDependencies(), GraphEdge.class);
         if (CollectionUtils.isNotEmpty(graphEdges)) {
             TaskFrequency frequency = TaskFrequency.ofCode(bean.getFrequency());

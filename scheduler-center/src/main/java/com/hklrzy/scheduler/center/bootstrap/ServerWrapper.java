@@ -1,9 +1,6 @@
 package com.hklrzy.scheduler.center.bootstrap;
 
-import com.alibaba.dubbo.config.ApplicationConfig;
-import com.alibaba.dubbo.config.RegistryConfig;
 import com.alibaba.dubbo.config.ServiceConfig;
-import com.hklrzy.scheduler.center.handlers.CenterServiceHandler;
 import com.hklrzy.scheduler.center.server.CenterServer;
 import com.hklrzy.scheduler.common.center.CenterService;
 import com.hklrzy.scheduler.common.configuration.CenterConfig;
@@ -52,18 +49,7 @@ public class ServerWrapper implements Disposable {
 
 
     private void createMasterService() {
-        ApplicationConfig applicationConfig = new ApplicationConfig(config.getString(CenterConfig.DUBBO_APPLICATION));
-        RegistryConfig registryConfig = new RegistryConfig(config.getString(CenterConfig.DUBBO_REGISTRY));
-        registryConfig.setGroup(CenterConfig.DUBBO_APPLICATION);
-        registryConfig.setProtocol("zookeeper");
-        registryConfig.setId(CenterConfig.DUBBO_REGISTER_ID);
-        this.serviceConfig = new ServiceConfig<>();
 
-        serviceConfig.setRegistry(registryConfig);
-        serviceConfig.setApplication(applicationConfig);
-        serviceConfig.setInterface(CenterService.class);
-        serviceConfig.setRef(CenterServiceHandler.getInstance());
-        serviceConfig.setVersion(CenterConfig.DUBBO_SERVICE_VERSION);
     }
 
     private void createMulticastService() {

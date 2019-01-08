@@ -1,7 +1,7 @@
 package com.hklrzy.scheduler.common.converter;
 
 import com.hklrzy.scheduler.common.bean.graph.GraphVertex;
-import com.hklrzy.scheduler.common.bean.TaskBean;
+import com.hklrzy.scheduler.common.bean.TaskRecord;
 
 /**
  * Created 2018/12/9.
@@ -10,7 +10,7 @@ import com.hklrzy.scheduler.common.bean.TaskBean;
  */
 public class TaskBeanConverter {
 
-    public static GraphVertex toGraphVertex(TaskBean taskBean) {
+    public static GraphVertex toGraphVertex(TaskRecord taskRecord) {
         return null;
     }
 }

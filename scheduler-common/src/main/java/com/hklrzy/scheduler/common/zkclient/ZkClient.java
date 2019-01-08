@@ -62,7 +62,6 @@ public class ZkClient implements Closeable {
 
     public boolean createPersistentNode(String path, String data) {
         return createNode(path, data, CreateMode.PERSISTENT);
-
     }
 
     public boolean createEphemeralNode(String path, String data) {
@@ -88,7 +87,6 @@ public class ZkClient implements Closeable {
         }
     }
 
-
     public List<String> getChildNode(String path) {
         if (Strings.isNullOrEmpty(path)) {
             throw new SchedulerException(ErrorCode.PARAMETER_INVAILED_EXCEPTION);
@@ -100,6 +98,7 @@ public class ZkClient implements Closeable {
             throw new SchedulerException(ErrorCode.ZK_NODE_FIND_EXCEPTION, e);
         }
     }
+
 
     public static String getLatchLeaderId(LeaderLatch latch) {
         try {

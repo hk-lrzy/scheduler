@@ -1,5 +1,6 @@
-package com.hklrzy.scheduler.common.bean;
+package com.hklrzy.scheduler.common.bean.request;
 
+import com.hklrzy.scheduler.common.bean.TaskRecord;
 import com.hklrzy.scheduler.common.constants.TaskRequestType;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,5 +21,5 @@ public class TaskRequest implements Serializable {
 
     private TaskRequestType requestType;
 
-    private List<TaskBean> requestLists;
+    private List<TaskRecord> requestLists;
 }

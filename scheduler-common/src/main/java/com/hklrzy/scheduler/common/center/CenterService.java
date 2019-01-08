@@ -1,8 +1,8 @@
 package com.hklrzy.scheduler.common.center;
 
-import com.hklrzy.scheduler.common.bean.InsRequest;
-import com.hklrzy.scheduler.common.bean.TaskBean;
-import com.hklrzy.scheduler.common.bean.TaskRequest;
+import com.hklrzy.scheduler.common.bean.TaskRecord;
+import com.hklrzy.scheduler.common.bean.request.InsRequest;
+import com.hklrzy.scheduler.common.bean.request.TaskRequest;
 
 import java.util.List;
 
@@ -13,13 +13,12 @@ import java.util.List;
  */
 public interface CenterService {
 
-    List<TaskBean> getParentTaskBeans(TaskBean childTaskBean);
+    List<TaskRecord> getParentTaskBeans(TaskRecord childTaskRecord);
 
 
-    List<TaskBean> getChildTaskBeans(TaskBean parentTaskBean);
+    List<TaskRecord> getChildTaskBeans(TaskRecord parentTaskRecord);
 
     void handleTaskRequest(TaskRequest request);
-
 
     void handleInsRequest(InsRequest request);
 }

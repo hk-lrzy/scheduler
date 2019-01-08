@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * @author ke.hao
  */
 @Data
-public class TaskBean implements Serializable {
+public class TaskRecord implements Serializable {
 
     private static final long serialVersionUID = 110149993973396573L;
 

@@ -1,4 +1,4 @@
-package com.hklrzy.scheduler.common.bean;
+package com.hklrzy.scheduler.common.bean.request;
 
 import java.io.Serializable;
 
